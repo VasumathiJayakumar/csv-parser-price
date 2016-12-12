@@ -98,6 +98,24 @@ test('CLI exits on parsing errors', (t) => {
   )
 })
 
+test('CLI exits on parsing mapping errors', (t) => {
+  const csvFilePath = './test/helpers/something.csv'
+  const jsonFilePath = tmp.fileSync().name
+
+  exec(`${binPath} -p ${PROJECT_KEY} -i ${csvFilePath} -o ${jsonFilePath}`,
+    (error, stdout, stderr) => {
+      console.log('error', error);
+      // console.log('stdout', stdout);
+      t.equal(error.code, 1, 'returns process error exit code')
+      t.false(stdout, 'returns no stdout data')
+      t.true(
+        stderr.match(/isn't valid/),
+        'returns SDK error on stderr')
+      t.end()
+    }
+  )
+})
+
 test('CLI logs stack trace on verbose level', (t) => {
   const csvFilePath = './test/helpers/sample.csv'
 
